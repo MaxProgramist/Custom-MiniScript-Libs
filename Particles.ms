@@ -19,20 +19,20 @@ Particle.update = function()
 end function
 
 ParticleSystem = {"position": new Vector2, "rotation": 0, 
-  "spread": new Vector2, "duration": 0, 
+  "spread": [0,0], "duration": 0, 
   "countOfParticles_min": 0, "countOfParticles_max": 0,
   "size_min": 0, "size_max": 0, 
   "speed_min": 0, "speed_max":0, 
   "lifetime_min": 0, "lifetime_max": 0, 
   "gravityForce": 0,
-  "texture": null, "color": color.white,
+  "texture": null, "color": "#FFFFFFFF",
   "particles":[], "timeBtwParticles":0, 
   "curentTimeBtwParticles":0, "lastTimeBtwParticles":0}
 
 ParticleSystem.update = function()
 	if self.curentTimeBtwParticles - self.lastTimeBtwParticles >= self.timeBtwParticles then
-		self.countOfParticles = mathUtil.randRange(self.countOfParticles_min, self.countOfParticles_max)
-		for i in range(0, self.countOfParticles)
+		self.countOfParticles = random(self.countOfParticles_min, self.countOfParticles_max)
+		for i in range(1, self.countOfParticles)
 			self.makeParticle()
 		end for
 		self.lastTimeBtwParticles = time
@@ -54,16 +54,16 @@ ParticleSystem.update = function()
 end function
 
 ParticleSystem.makeParticle = function()
-	self.sizeOfParticle = mathUtil.randRange(self.size_min, self.size_max)
+	self.sizeOfParticle = random(self.size_min, self.size_max,4)
 	
 	self.particleDirection = new Vector2
-	self.rotationOfParticle = mathUtil.degToRad(mathUtil.randRange(self.rotation-self.spread.x, self.rotation+self.spread.y))
+	self.rotationOfParticle = mathUtil.degToRad(random(self.rotation-self.spread[0], self.rotation+self.spread[1], 4))
 	self.particleDirection.x = cos(self.rotationOfParticle)
 	self.particleDirection.y = sin(self.rotationOfParticle)
 	
-	self.speedOfParticle = mathUtil.randRange(self.speed_min, self.speed_max)
+	self.speedOfParticle = random(self.speed_min, self.speed_max, 4)
 	
-	self.lifetimeOfParticle = mathUtil.randRange(self.lifetime_min, self.lifetime_max)
+	self.lifetimeOfParticle = random(self.lifetime_min, self.lifetime_max, 4)
 	
 	self.newParticle = new Particle
 	self.particles.push self.newParticle
@@ -77,7 +77,7 @@ ParticleSystem.makeParticle = function()
 	
 	self.newParticle.sprite = new Sprite
 	self.newParticle.sprite.image = self.texture
-	self.newParticle.sprite.size = self.sizeOfParticle
+	self.newParticle.sprite.scale = self.sizeOfParticle
 	self.newParticle.sprite.tint = self.color
 	self.newParticle.sprite.x = self.position.x
 	self.newParticle.sprite.y = self.position.y
@@ -92,7 +92,7 @@ initialParticleSystem = function(position = null, rotation = 0, spread = null, d
 	if position == null then position = [0,0]
 	if spread == null then spread = [0,0]
 	if countOfParticles == null then countOfParticles = [0,0]
-	if size == null then size = [0,0]
+	if size == null then size = [1,1]
 	if speed == null then speed = [0,0]
 	if lifetime == null then lifetime = [0,0]
 	if texture == null then texture = file.loadImage("/sys/pics/shapes/Circle.png")
@@ -105,12 +105,7 @@ initialParticleSystem = function(position = null, rotation = 0, spread = null, d
 	CurentParticleSystem.position = tempVector2_1
 	
 	CurentParticleSystem.rotation = rotation
-	
-	tempVector2_2 = new Vector2
-	tempVector2_2.x = spread[0]
-	tempVector2_2.y = spread[1]
-	CurentParticleSystem.position = tempVector2_2
-	
+	CurentParticleSystem.spread = spread
 	CurentParticleSystem.duration = duration
 	CurentParticleSystem.countOfParticles_min = countOfParticles[0]
 	CurentParticleSystem.countOfParticles_max = countOfParticles[1]
@@ -136,9 +131,13 @@ initialParticleSystem = function(position = null, rotation = 0, spread = null, d
 	return CurentParticleSystem
 end function
 
+random = function(a,b,t)
+	return round((rnd()*(b-a))+a, t)
+end function
+
 testFunction1 = function
 	clear
-	testPS = initialParticleSystem([600,600], 45, [45,45], 5, [5,7], [0.3,0.4], [0.2,0.3], [6,10], 0, null, "#FFFFFFFF")
+	testPS = initialParticleSystem([200,200], 45, [45,45], 5, [1,2], [0.3,0.5], [5,6], [6,10], 0.01, null, "#FFFFFFFF")
 	
 	while true
 		display(3).clear
