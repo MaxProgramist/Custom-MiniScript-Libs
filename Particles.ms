@@ -13,7 +13,7 @@ Particle.update = function()
 	
 	self.curentLifeTime = time
 	
-	if (self.curentLifeTime-self.startLifeTime >= self.lifetime) then
+	if self.curentLifeTime-self.startLifeTime >= self.lifetime then
 		display(4).sprites.remove display(4).sprites.indexOf(self.sprite)
 	end if
 end function
@@ -46,44 +46,48 @@ ParticleSystem.update = function()
 		end if
 	end for
 	
+	print "!!! "+self.particles.len+" PARTICLES!!"
+	
 	self.curentTimeBtwParticles = time
 	
 	print "!!! Update!"
 end function
 
 ParticleSystem.makeParticle = function()
-	sizeOfParticle = mathUtil.randRange(self.size_min, self.size_max)
+	self.sizeOfParticle = mathUtil.randRange(self.size_min, self.size_max)
 	
-	particleDirection = new Vector2
-	rotationOfParticle = mathUtil.degToRad(mathUtil.randRange(self.rotation-self.spread.x, self.rotation+self.spread.y))
-	particleDirection.x = cos(rotationOfParticle)
-	particleDirection.y = sin(rotationOfParticle)
+	self.particleDirection = new Vector2
+	self.rotationOfParticle = mathUtil.degToRad(mathUtil.randRange(self.rotation-self.spread.x, self.rotation+self.spread.y))
+	self.particleDirection.x = cos(self.rotationOfParticle)
+	self.particleDirection.y = sin(self.rotationOfParticle)
 	
-	speedOfParticle = mathUtil.randRange(self.speed_min, self.speed_max)
+	self.speedOfParticle = mathUtil.randRange(self.speed_min, self.speed_max)
 	
-	lifetimeOfParticle = mathUtil.randRange(self.lifetime_min, self.lifetime_max)
+	self.lifetimeOfParticle = mathUtil.randRange(self.lifetime_min, self.lifetime_max)
 	
-	newParticle = new Particle
-	self.particles.push newParticle
+	self.newParticle = new Particle
+	self.particles.push self.newParticle
 	
-	newParticle.speed = speedOfParticle
-	newParticle.direction = particleDirection
-	newParticle.lifetime = lifetimeOfParticle
-	newParticle.gravityForce = self.gravityForce
-	newParticle.curentLifeTime = time
-	newParticle.startLifeTime = time
+	self.newParticle.speed = self.speedOfParticle
+	self.newParticle.direction = self.particleDirection
+	self.newParticle.lifetime = self.lifetimeOfParticle
+	self.newParticle.gravityForce = self.gravityForce
+	self.newParticle.curentLifeTime = time
+	self.newParticle.startLifeTime = time
 	
-	newParticle.sprite = new Sprite
-	newParticle.sprite.image = self.texture
-	newParticle.sprite.size = sizeOfParticle
-	newParticle.sprite.tint = self.color
-	display(4).sprites.push newParticle.sprite
+	self.newParticle.sprite = new Sprite
+	self.newParticle.sprite.image = self.texture
+	self.newParticle.sprite.size = self.sizeOfParticle
+	self.newParticle.sprite.tint = self.color
+	self.newParticle.sprite.x = self.position.x
+	self.newParticle.sprite.y = self.position.y
+	display(4).sprites.push self.newParticle.sprite
 	
 	print "!!! Made new Particle!"
 end function
 
 
-initialParticleSystem = function(position = null, rotation = 0, spread = null, duration = 0, countOfParticles = null, size = null, speed = null, lifetime = null, gravityForce = 0, texture = null, color = "#FFF")
+initialParticleSystem = function(position = null, rotation = 0, spread = null, duration = 0, countOfParticles = null, size = null, speed = null, lifetime = null, gravityForce = 0, texture = null, color = "#FFFFFFFF")
 	
 	if position == null then position = [0,0]
 	if spread == null then spread = [0,0]
@@ -95,16 +99,17 @@ initialParticleSystem = function(position = null, rotation = 0, spread = null, d
 	
 	CurentParticleSystem = new ParticleSystem
 	
-	tempVector2 = new Vector2
-	tempVector2.x = position[0]
-	tempVector2.y = position[1]
-	CurentParticleSystem.position = tempVector2
+	tempVector2_1 = new Vector2
+	tempVector2_1.x = position[0]
+	tempVector2_1.y = position[1]
+	CurentParticleSystem.position = tempVector2_1
 	
 	CurentParticleSystem.rotation = rotation
 	
-	tempVector2.x = spread[0]
-	tempVector2.y = spread[1]
-	CurentParticleSystem.position = tempVector2
+	tempVector2_2 = new Vector2
+	tempVector2_2.x = spread[0]
+	tempVector2_2.y = spread[1]
+	CurentParticleSystem.position = tempVector2_2
 	
 	CurentParticleSystem.duration = duration
 	CurentParticleSystem.countOfParticles_min = countOfParticles[0]
@@ -131,9 +136,9 @@ initialParticleSystem = function(position = null, rotation = 0, spread = null, d
 	return CurentParticleSystem
 end function
 
-testFunction = function
+testFunction1 = function
 	clear
-	testPS = initialParticleSystem([200,200], 6, [45,45], 5, [5,7], [60,65], [2,3], [6,10], 0, null, "#FFF")
+	testPS = initialParticleSystem([600,600], 45, [45,45], 5, [5,7], [0.3,0.4], [0.2,0.3], [6,10], 0, null, "#FFFFFFFF")
 	
 	while true
 		display(3).clear
@@ -143,4 +148,4 @@ testFunction = function
 	end while
 end function
 
-testFunction
+testFunction1
