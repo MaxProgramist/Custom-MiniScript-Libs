@@ -27,16 +27,17 @@ ParticleSystem = {"position": new Vector2, "rotation": 0,
   "gravityForce": 0,
   "texture": null, "color": "#FFFFFFFF",
   "particles":[], "timeBtwParticles":0, 
-  "curentTimeBtwParticles":0, "lastTimeBtwParticles":0}
+  "curentTimeBtwParticles":0, "lastTimeBtwParticles":0,
+  "startParticleSystem":0}
 
 ParticleSystem.update = function()
-	if self.curentTimeBtwParticles - self.lastTimeBtwParticles >= self.timeBtwParticles then
+	
+	if self.curentTimeBtwParticles - self.lastTimeBtwParticles >= self.timeBtwParticles and time - self.startParticleSystem < self.duration then
 		self.countOfParticles = random(self.countOfParticles_min, self.countOfParticles_max)
 		for i in range(1, self.countOfParticles)
 			self.makeParticle()
 		end for
 		self.lastTimeBtwParticles = time
-		print "!!! ----SPAWN!"
 	end if
 	
 	for curentParticle in self.particles
@@ -45,8 +46,6 @@ ParticleSystem.update = function()
 			self.particles.remove self.particles.indexOf(curentParticle)
 		end if
 	end for
-	
-	print "!!! "+self.particles.len+" PARTICLES!!"
 	
 	self.curentTimeBtwParticles = time
 	
@@ -82,12 +81,10 @@ ParticleSystem.makeParticle = function()
 	self.newParticle.sprite.x = self.position.x
 	self.newParticle.sprite.y = self.position.y
 	display(4).sprites.push self.newParticle.sprite
-	
-	print "!!! Made new Particle!"
 end function
 
 
-initialParticleSystem = function(position = null, rotation = 0, spread = null, duration = 0, countOfParticles = null, size = null, speed = null, lifetime = null, gravityForce = 0, texture = null, color = "#FFFFFFFF")
+initialParticleSystem = function(position = null, rotation = 0, spread = null, duration = 0, countOfParticles = null, size = null, speed = null, lifetime = null, gravityForce = 0, timeBtwParticles = 0, texture = null, color = "#FFFFFFFF")
 	
 	if position == null then position = [0,0]
 	if spread == null then spread = [0,0]
@@ -96,7 +93,7 @@ initialParticleSystem = function(position = null, rotation = 0, spread = null, d
 	if speed == null then speed = [0,0]
 	if lifetime == null then lifetime = [0,0]
 	if texture == null then texture = file.loadImage("/sys/pics/shapes/Circle.png")
-	
+	if texture == 0 then timeBtwParticles = 1/60
 	CurentParticleSystem = new ParticleSystem
 	
 	tempVector2_1 = new Vector2
@@ -116,17 +113,16 @@ initialParticleSystem = function(position = null, rotation = 0, spread = null, d
 	CurentParticleSystem.lifetime_min = lifetime[0]
 	CurentParticleSystem.lifetime_max = lifetime[1]
 	CurentParticleSystem.gravityForce = gravityForce
+	CurentParticleSystem.timeBtwParticles = 1/60
 	
 	CurentParticleSystem.texture = texture
 	
 	CurentParticleSystem.color = color
 	
 	CurentParticleSystem.particles = []
-	CurentParticleSystem.timeBtwParticles = 1/60
 	CurentParticleSystem.curentTimeBtwParticles = time
 	CurentParticleSystem.lastTimeBtwParticles = time
-	
-	print "!!! Done Initialization!"
+	CurentParticleSystem.startParticleSystem = time
 	
 	return CurentParticleSystem
 end function
@@ -137,11 +133,13 @@ end function
 
 testFunction1 = function
 	clear
-	testPS = initialParticleSystem([200,200], 45, [45,45], 5, [1,2], [0.3,0.5], [5,6], [6,10], 0.01, null, "#FFFFFFFF")
+	testPS = initialParticleSystem([200,200], 45, [15,15], 5, [1,2], [0.1,0.2], [5,6], [6,10], 0.01, 1/360, null, "#FFFFFFFF")
 	
 	while true
 		display(3).clear
-		testPS.update()
+		if time - testPS.startParticleSystem < testPS.duration or testPS.particles != [] then
+			testPS.update()
+		end if
 		
 		yield
 	end while
