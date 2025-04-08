@@ -1,9 +1,9 @@
 import "mathUtil"
 
-Vector2 = {"x":0, "y":0}
+localDisplay = display(4)
+FPSConst = 1/60
 
-localDisplay = new SpriteDisplay
-localDisplay.clear
+Vector2 = {"x":0, "y":0}
 
 Particle = {"speed": 0, "direction": new Vector2, "lifetime": 0,
     "gravityForce": 0, "sprite": null, "startLifeTime":0}
@@ -14,10 +14,7 @@ Particle.update = function()
 	
 	self.direction.y -= self.gravityForce
 	
-	if time-self.startLifeTime > self.lifetime and
-	  (display(4).sprites.indexOf(self.sprite) != null) then
-		
-	end if
+	self.lifetime -= FPSConst
 end function
 
 ParticleSystem = {"position": new Vector2, "rotation": 0, 
@@ -30,17 +27,20 @@ ParticleSystem = {"position": new Vector2, "rotation": 0,
   "texture": null, "color": "#FFFFFFFF",
   "particles":[], "timeBtwParticles":0, 
   "lastTimeBtwParticles":0, "startParticleSystem":0,
-  "spriteDisplay": new SpriteDisplay, "countOfUsed":0}
+  "localDisplay":display(4)}
 
 ParticleSystem.update = function()
+	self.start = time
 	
 	for curentParticle in self.particles
 		curentParticle.update()
-		if time-curentParticle.startLifeTime >= curentParticle.lifetime then
-			self.spriteDisplay.sprites.remove self.spriteDisplay.sprites.indexOf(curentParticle.sprite)
+		if curentParticle.lifetime <= 0 then
+			globals.localDisplay.sprites.remove globals.localDisplay.sprites.indexOf(curentParticle.sprite)
 			self.particles.remove self.particles.indexOf(curentParticle)
 		end if
 	end for
+	
+	print "Time: " + (time - self.start) + char(9) + " of " + (1/60) + "Diference: " + ((time - self.start) - (1/60))
 	
 	if time - self.startParticleSystem > self.duration then return
 	
@@ -52,7 +52,7 @@ ParticleSystem.update = function()
 		self.lastTimeBtwParticles = time
 	end if
 	
-	print "!!! Update!"
+	self.duration -= FPSConst
 end function
 
 ParticleSystem.makeParticle = function()
@@ -83,7 +83,9 @@ ParticleSystem.makeParticle = function()
 	self.newParticle.sprite.tint = self.color
 	self.newParticle.sprite.x = self.position.x
 	self.newParticle.sprite.y = self.position.y
-	self.spriteDisplay.sprites.push self.newParticle.sprite
+	globals.localDisplay.sprites.push self.newParticle.sprite
+	
+	return self.newParticle
 end function
 
 
@@ -126,9 +128,50 @@ initialParticleSystem = function(position = null, rotation = 0, spread = null, d
 	CurentParticleSystem.curentTimeBtwParticles = time
 	CurentParticleSystem.lastTimeBtwParticles = time
 	CurentParticleSystem.startParticleSystem = time
-	CurentParticleSystem.spriteDisplay = localDisplay
+	CurentParticleSystem.localDisplay = display(4)
 	
 	return CurentParticleSystem
+end function
+
+setParticleSystemDisplay = function(particleSystem, displayIndex)
+	if particleSystem == null then return
+	particleSystem.localDisplay = display(displayIndex)
+end function
+
+changeParticleSystem = function(particleSystem, position = null, rotation = 0, spread = null, duration = 0, countOfParticles = null, size = null, speed = null, lifetime = null, gravityForce = 0, timeBtwParticles = 0, texture = null, color = "#FFFFFFFF")
+	
+	if position == null then position = [0,0]
+	if spread == null then spread = [0,0]
+	if countOfParticles == null then countOfParticles = [0,0]
+	if size == null then size = [1,1]
+	if speed == null then speed = [0,0]
+	if lifetime == null then lifetime = [0,0]
+	if texture == null then texture = file.loadImage("/sys/pics/shapes/Circle.png")
+	if timeBtwParticles == 0 then timeBtwParticles = 1/60
+	CurentParticleSystem = new ParticleSystem
+	
+	tempVector2_1 = new Vector2
+	tempVector2_1.x = position[0]
+	tempVector2_1.y = position[1]
+	particleSystem.position = tempVector2_1
+	
+	particleSystem.rotation = rotation
+	particleSystem.spread = spread
+	particleSystem.duration = duration
+	particleSystem.countOfParticles_min = countOfParticles[0]
+	particleSystem.countOfParticles_max = countOfParticles[1]
+	particleSystem.size_min = size[0]
+	particleSystem.size_max = size[1]
+	particleSystem.speed_min = speed[0]
+	particleSystem.speed_max = speed[1]
+	particleSystem.lifetime_min = lifetime[0]
+	particleSystem.lifetime_max = lifetime[1]
+	particleSystem.gravityForce = gravityForce
+	particleSystem.timeBtwParticles = 1/60
+	
+	particleSystem.texture = texture
+	
+	particleSystem.color = color
 end function
 
 random = function(a,b,t)
@@ -138,20 +181,20 @@ end function
 testFunction1 = function
 	clear
 	localDisplay.clear
-	FPS = time
-	testPS = initialParticleSystem([200,200], -45, [15,15], 5, [4,6], [0.1,0.2], [5,6], [5,6], 0.01, 1/360, null, "#FFFFFFFF")
-	testPS1 = initialParticleSystem([400,200], 45, [15,15], 5, [4,6], [0.1,0.2], [5,6], [5,6], 0.01, 1/360, null, "#FFFFFFFF")
-	localDisplay.install 1
+	
+	testPS = initialParticleSystem([200,200], -15, [45,45], 5, [5,8], [0.1,0.2], [5,6], [5,6], 0.01, 1/360, null, "#FFFFFFFF")
+	testPS1 = initialParticleSystem([400,200], 15, [45,45], 5, [5,8], [0.1,0.2], [5,6], [5,6], 0.01, 1/360, null, "#FFFFFFFF")
 	
 	while true
 		display(3).clear
-		print (time - FPS) + "/" + (1/60) + " Dif:" + ((time - FPS)-(1/60))
-		if time - testPS.startParticleSystem < testPS.duration or testPS.particles != [] then
+		
+		if testPS.duration > 0 or testPS.particles != [] then
 			testPS.update()
+		end if
+		if testPS1.duration > 0 or testPS1.particles != [] then
 			testPS1.update()
 		end if
 		
-		FPS = time
 		yield
 	end while
 end function
