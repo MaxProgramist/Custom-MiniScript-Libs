@@ -16,7 +16,7 @@ initialParticleSystem(position, rotation, spread, duration, countOfParticles, si
 +-----------------------+----------------++-----------------------+----------------+
 |                                      Return                                      |
 +-----------------------+----------------++-----------------------+----------------+
-| particle System       | custom class   ||spriteDisplay          | display        |
+| particle System       | custom class   || spriteDisplay          | display        |
 +-----------------------+----------------++----------------------------------------+
 
 
