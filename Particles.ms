@@ -56,7 +56,7 @@ ParticleSystem.makeParticle = function()
 	self.sizeOfParticle = random(self.size_min, self.size_max,4)
 	
 	self.particleDirection = new Vector2
-	self.rotationOfParticle = mathUtil.degToRad(random(self.rotation-self.spread[0], self.rotation+self.spread[1], 4))
+	self.rotationOfParticle = mathUtil.degToRad(random(self.rotation-self.spread[0]+90, self.rotation+self.spread[1]+90, 4))
 	self.particleDirection.x = cos(self.rotationOfParticle)
 	self.particleDirection.y = sin(self.rotationOfParticle)
 	
@@ -93,7 +93,7 @@ initialParticleSystem = function(position = null, rotation = 0, spread = null, d
 	if speed == null then speed = [0,0]
 	if lifetime == null then lifetime = [0,0]
 	if texture == null then texture = file.loadImage("/sys/pics/shapes/Circle.png")
-	if texture == 0 then timeBtwParticles = 1/60
+	if timeBtwParticles == 0 then timeBtwParticles = 1/60
 	CurentParticleSystem = new ParticleSystem
 	
 	tempVector2_1 = new Vector2
@@ -133,7 +133,7 @@ end function
 
 testFunction1 = function
 	clear
-	testPS = initialParticleSystem([200,200], 45, [15,15], 5, [1,2], [0.1,0.2], [5,6], [6,10], 0.01, 1/360, null, "#FFFFFFFF")
+	testPS = initialParticleSystem([200,200], 0, [15,15], 5, [4,6], [0.1,0.2], [5,6], [1,2], 0.01, 1/360, null, "#FFFFFFFF")
 	
 	while true
 		display(3).clear
@@ -145,4 +145,4 @@ testFunction1 = function
 	end while
 end function
 
-testFunction1
+if locals == globals then testFunction1
