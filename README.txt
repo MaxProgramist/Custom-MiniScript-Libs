@@ -15,6 +15,13 @@ initialParticleSystem(position, rotation, spread, duration, countOfParticles, si
 | size                  | [min, max]     ||                       |                |
 +-----------------------+----------------++-----------------------+----------------+
 |                                      Return                                      |
++-----------------------+----------------++-----------------------+----------------+
+| particle System       | custom class   ||spriteDisplay          | display        |
 +-----------------------+----------------++----------------------------------------+
-| particle System       | custom class   ||                                        |
-+-----------------------+----------------++----------------------------------------+
+
+
+
+
+
+-------- Editional --------
+displayName.install index
