@@ -2,6 +2,9 @@ import "mathUtil"
 
 Vector2 = {"x":0, "y":0}
 
+localDisplay = new SpriteDisplay
+localDisplay.clear
+
 Particle = {"speed": 0, "direction": new Vector2, "lifetime": 0,
     "gravityForce": 0, "sprite": null, "startLifeTime":0}
 
@@ -27,7 +30,7 @@ ParticleSystem = {"position": new Vector2, "rotation": 0,
   "texture": null, "color": "#FFFFFFFF",
   "particles":[], "timeBtwParticles":0, 
   "lastTimeBtwParticles":0, "startParticleSystem":0,
-  "spriteDisplay":new SpriteDisplay}
+  "spriteDisplay": new SpriteDisplay, "countOfUsed":0}
 
 ParticleSystem.update = function()
 	
@@ -123,7 +126,7 @@ initialParticleSystem = function(position = null, rotation = 0, spread = null, d
 	CurentParticleSystem.curentTimeBtwParticles = time
 	CurentParticleSystem.lastTimeBtwParticles = time
 	CurentParticleSystem.startParticleSystem = time
-	CurentParticleSystem.spriteDisplay = new SpriteDisplay
+	CurentParticleSystem.spriteDisplay = localDisplay
 	
 	return CurentParticleSystem
 end function
@@ -134,20 +137,25 @@ end function
 
 testFunction1 = function
 	clear
+	localDisplay.clear
 	FPS = time
 	testPS = initialParticleSystem([200,200], -45, [15,15], 5, [4,6], [0.1,0.2], [5,6], [5,6], 0.01, 1/360, null, "#FFFFFFFF")
+	testPS1 = initialParticleSystem([400,200], 45, [15,15], 5, [4,6], [0.1,0.2], [5,6], [5,6], 0.01, 1/360, null, "#FFFFFFFF")
+	localDisplay.install 1
 	
 	while true
 		display(3).clear
 		print (time - FPS) + "/" + (1/60) + " Dif:" + ((time - FPS)-(1/60))
 		if time - testPS.startParticleSystem < testPS.duration or testPS.particles != [] then
 			testPS.update()
-			testPS.spriteDisplay.install 0
+			testPS1.update()
 		end if
 		
 		FPS = time
 		yield
 	end while
 end function
+
+
 
 if locals == globals then testFunction1
