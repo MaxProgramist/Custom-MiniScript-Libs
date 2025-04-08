@@ -3,7 +3,7 @@ import "mathUtil"
 Vector2 = {"x":0, "y":0}
 
 Particle = {"speed": 0, "direction": new Vector2, "lifetime": 0,
-    "gravityForce": 0, "sprite": null, "curentLifeTime":0, "startLifeTime":0}
+    "gravityForce": 0, "sprite": null, "startLifeTime":0}
 
 Particle.update = function()
 	self.sprite.x += self.direction.x * self.speed
@@ -11,10 +11,9 @@ Particle.update = function()
 	
 	self.direction.y -= self.gravityForce
 	
-	self.curentLifeTime = time
-	
-	if self.curentLifeTime-self.startLifeTime >= self.lifetime then
-		display(4).sprites.remove display(4).sprites.indexOf(self.sprite)
+	if time-self.startLifeTime > self.lifetime and
+	  (display(4).sprites.indexOf(self.sprite) != null) then
+		
 	end if
 end function
 
@@ -27,27 +26,28 @@ ParticleSystem = {"position": new Vector2, "rotation": 0,
   "gravityForce": 0,
   "texture": null, "color": "#FFFFFFFF",
   "particles":[], "timeBtwParticles":0, 
-  "curentTimeBtwParticles":0, "lastTimeBtwParticles":0,
-  "startParticleSystem":0}
+  "lastTimeBtwParticles":0, "startParticleSystem":0,
+  "spriteDisplay":new SpriteDisplay}
 
 ParticleSystem.update = function()
 	
-	if self.curentTimeBtwParticles - self.lastTimeBtwParticles >= self.timeBtwParticles and time - self.startParticleSystem < self.duration then
+	for curentParticle in self.particles
+		curentParticle.update()
+		if time-curentParticle.startLifeTime >= curentParticle.lifetime then
+			self.spriteDisplay.sprites.remove self.spriteDisplay.sprites.indexOf(curentParticle.sprite)
+			self.particles.remove self.particles.indexOf(curentParticle)
+		end if
+	end for
+	
+	if time - self.startParticleSystem > self.duration then return
+	
+	if time - self.lastTimeBtwParticles > self.timeBtwParticles then
 		self.countOfParticles = random(self.countOfParticles_min, self.countOfParticles_max)
 		for i in range(1, self.countOfParticles)
 			self.makeParticle()
 		end for
 		self.lastTimeBtwParticles = time
 	end if
-	
-	for curentParticle in self.particles
-		curentParticle.update()
-		if curentParticle.curentLifeTime-curentParticle.startLifeTime >= curentParticle.lifetime then
-			self.particles.remove self.particles.indexOf(curentParticle)
-		end if
-	end for
-	
-	self.curentTimeBtwParticles = time
 	
 	print "!!! Update!"
 end function
@@ -80,7 +80,7 @@ ParticleSystem.makeParticle = function()
 	self.newParticle.sprite.tint = self.color
 	self.newParticle.sprite.x = self.position.x
 	self.newParticle.sprite.y = self.position.y
-	display(4).sprites.push self.newParticle.sprite
+	self.spriteDisplay.sprites.push self.newParticle.sprite
 end function
 
 
@@ -123,6 +123,7 @@ initialParticleSystem = function(position = null, rotation = 0, spread = null, d
 	CurentParticleSystem.curentTimeBtwParticles = time
 	CurentParticleSystem.lastTimeBtwParticles = time
 	CurentParticleSystem.startParticleSystem = time
+	CurentParticleSystem.spriteDisplay = new SpriteDisplay
 	
 	return CurentParticleSystem
 end function
@@ -133,14 +134,18 @@ end function
 
 testFunction1 = function
 	clear
-	testPS = initialParticleSystem([200,200], 0, [15,15], 5, [4,6], [0.1,0.2], [5,6], [1,2], 0.01, 1/360, null, "#FFFFFFFF")
+	FPS = time
+	testPS = initialParticleSystem([200,200], -45, [15,15], 5, [4,6], [0.1,0.2], [5,6], [5,6], 0.01, 1/360, null, "#FFFFFFFF")
 	
 	while true
 		display(3).clear
+		print (time - FPS) + "/" + (1/60) + " Dif:" + ((time - FPS)-(1/60))
 		if time - testPS.startParticleSystem < testPS.duration or testPS.particles != [] then
 			testPS.update()
+			testPS.spriteDisplay.install 0
 		end if
 		
+		FPS = time
 		yield
 	end while
 end function
