@@ -5,6 +5,8 @@ How to use each lib:
 initialParticleSystem(position, rotation, spread, duration, countOfParticles, size, speed, lifetime, gravityForce, timeBtwParticles, texture, color)
 
 +-----------------------+----------------+
+|                 Input                  |
++-----------------------+----------------+
 | position              | [x,y]          |
 | rotation              | angle          |
 | spread                | [left, right]  |
@@ -16,4 +18,8 @@ initialParticleSystem(position, rotation, spread, duration, countOfParticles, si
 | timeBtwParticles      | seconds        |
 | texture               | image          |
 | color                 | string         |
++-----------------------+----------------+
+|                 Return                 |
++-----------------------+----------------+
+| particle System       | custom class   |
 +-----------------------+----------------+
