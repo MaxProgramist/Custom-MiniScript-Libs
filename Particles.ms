@@ -40,7 +40,8 @@ ParticleSystem.update = function()
 		end if
 	end for
 	
-	print "Time: " + (time - self.start) + char(9) + " of " + (1/60) + "Diference: " + ((time - self.start) - (1/60))
+	print "Time_1: " + (time - self.start) + char(9) + " of " + (1/60) + "Diference: " + ((time - self.start) - (1/60))
+	self.start = time
 	
 	if time - self.startParticleSystem > self.duration then return
 	
@@ -51,6 +52,8 @@ ParticleSystem.update = function()
 		end for
 		self.lastTimeBtwParticles = time
 	end if
+	
+	print "Time_2: " + (time - self.start) + char(9) + " of " + (1/60) + "Diference: " + ((time - self.start) - (1/60))
 	
 	self.duration -= FPSConst
 end function
