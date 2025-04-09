@@ -27,8 +27,7 @@ ParticleSystem = {"position": new Vector2, "rotation": 0,
 "texture": null, "color": "#FFFFFFFF",
 "particles":[], "timeBtwParticles":0, 
 "lastTimeBtwParticles":0, "startParticleSystem":0,
-"localDisplay":display(4)
-}
+"localDisplay":display(4)}
 
 ParticleSystem.update = function()
 	self.start = time
