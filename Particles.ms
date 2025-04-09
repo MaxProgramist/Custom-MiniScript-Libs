@@ -6,7 +6,7 @@ FPSConst = 1/60
 Vector2 = {"x":0, "y":0}
 
 Particle = {"speed": 0, "direction": new Vector2, "lifetime": 0,
-    "gravityForce": 0, "sprite": null, "startLifeTime":0}
+"gravityForce": 0, "sprite": null, "startLifeTime":0}
 
 Particle.update = function()
 	self.sprite.x += self.direction.x * self.speed
@@ -18,16 +18,16 @@ Particle.update = function()
 end function
 
 ParticleSystem = {"position": new Vector2, "rotation": 0, 
-  "spread": [0,0], "duration": 0, 
-  "countOfParticles_min": 0, "countOfParticles_max": 0,
-  "size_min": 0, "size_max": 0, 
-  "speed_min": 0, "speed_max":0, 
-  "lifetime_min": 0, "lifetime_max": 0, 
-  "gravityForce": 0,
-  "texture": null, "color": "#FFFFFFFF",
-  "particles":[], "timeBtwParticles":0, 
-  "lastTimeBtwParticles":0, "startParticleSystem":0,
-  "localDisplay":display(4)
+"spread": [0,0], "duration": 0, 
+"countOfParticles_min": 0, "countOfParticles_max": 0,
+"size_min": 0, "size_max": 0, 
+"speed_min": 0, "speed_max":0, 
+"lifetime_min": 0, "lifetime_max": 0, 
+"gravityForce": 0,
+"texture": null, "color": "#FFFFFFFF",
+"particles":[], "timeBtwParticles":0, 
+"lastTimeBtwParticles":0, "startParticleSystem":0,
+"localDisplay":display(4)
 }
 
 ParticleSystem.update = function()
@@ -168,7 +168,7 @@ changeParticleSystem = function(particleSystem, position = null, rotation = 0, s
 	particleSystem.lifetime_min = lifetime[0]
 	particleSystem.lifetime_max = lifetime[1]
 	particleSystem.gravityForce = gravityForce
-	particleSystem.timeBtwParticles = 1/60
+	particleSystem.timeBtwParticles = timeBtwParticles
 	
 	particleSystem.texture = texture
 	
