@@ -138,42 +138,6 @@ setParticleSystemDisplay = function(particleSystem, displayIndex)
 	particleSystem.localDisplay = display(displayIndex)
 end function
 
-changeParticleSystem = function(particleSystem, position = null, rotation = 0, spread = null, duration = 0, countOfParticles = null, size = null, speed = null, lifetime = null, gravityForce = 0, timeBtwParticles = 0, texture = null, color = "#FFFFFFFF")
-	
-	if position == null then position = [0,0]
-	if spread == null then spread = [0,0]
-	if countOfParticles == null then countOfParticles = [0,0]
-	if size == null then size = [1,1]
-	if speed == null then speed = [0,0]
-	if lifetime == null then lifetime = [0,0]
-	if texture == null then texture = file.loadImage("/sys/pics/shapes/Circle.png")
-	if timeBtwParticles == 0 then timeBtwParticles = 1/60
-	CurentParticleSystem = new ParticleSystem
-	
-	tempVector2_1 = new Vector2
-	tempVector2_1.x = position[0]
-	tempVector2_1.y = position[1]
-	particleSystem.position = tempVector2_1
-	
-	particleSystem.rotation = rotation
-	particleSystem.spread = spread
-	particleSystem.duration = duration
-	particleSystem.countOfParticles_min = countOfParticles[0]
-	particleSystem.countOfParticles_max = countOfParticles[1]
-	particleSystem.size_min = size[0]
-	particleSystem.size_max = size[1]
-	particleSystem.speed_min = speed[0]
-	particleSystem.speed_max = speed[1]
-	particleSystem.lifetime_min = lifetime[0]
-	particleSystem.lifetime_max = lifetime[1]
-	particleSystem.gravityForce = gravityForce
-	particleSystem.timeBtwParticles = timeBtwParticles
-	
-	particleSystem.texture = texture
-	
-	particleSystem.color = color
-end function
-
 random = function(a,b,t)
 	return round((rnd()*(b-a))+a, t)
 end function
