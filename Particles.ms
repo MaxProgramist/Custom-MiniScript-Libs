@@ -1,6 +1,5 @@
 import "mathUtil"
 
-localDisplay = display(4)
 FPSConst = 1/60
 
 Vector2 = {"x":0, "y":0}
@@ -35,12 +34,12 @@ ParticleSystem.update = function()
 	for curentParticle in self.particles
 		curentParticle.update()
 		if curentParticle.lifetime <= 0 then
-			globals.localDisplay.sprites.remove globals.localDisplay.sprites.indexOf(curentParticle.sprite)
+			self.localDisplay.sprites.remove self.localDisplay.sprites.indexOf(curentParticle.sprite)
 			self.particles.remove self.particles.indexOf(curentParticle)
 		end if
 	end for
 	
-	print "Time_1: " + (time - self.start) + char(9) + " of " + (1/60) + "Diference: " + ((time - self.start) - (1/60))
+	print "Time_1: " + (time - self.start) + char(9) + " of " + (1/60) + " Diference: " + ((time - self.start) - (1/60))
 	self.start = time
 	
 	if time - self.startParticleSystem > self.duration then return
@@ -56,6 +55,11 @@ ParticleSystem.update = function()
 	print "Time_2: " + (time - self.start) + char(9) + " of " + (1/60) + "Diference: " + ((time - self.start) - (1/60))
 	
 	self.duration -= FPSConst
+end function
+
+ParticleSystem.updateDisplay = function(index) 
+	index = mathUtil.clamp(index,1,7)
+	self.localDisplay = display(index)
 end function
 
 ParticleSystem.makeParticle = function()
@@ -86,7 +90,7 @@ ParticleSystem.makeParticle = function()
 	self.newParticle.sprite.tint = self.color
 	self.newParticle.sprite.x = self.position.x
 	self.newParticle.sprite.y = self.position.y
-	globals.localDisplay.sprites.push self.newParticle.sprite
+	self.localDisplay.sprites.push self.newParticle.sprite
 	
 	return self.newParticle
 end function
@@ -134,11 +138,6 @@ initialParticleSystem = function(position = null, rotation = 0, spread = null, d
 	CurentParticleSystem.localDisplay = display(4)
 	
 	return CurentParticleSystem
-end function
-
-setParticleSystemDisplay = function(particleSystem, displayIndex)
-	if particleSystem == null then return
-	particleSystem.localDisplay = display(displayIndex)
 end function
 
 random = function(a,b,t)
