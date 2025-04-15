@@ -42,6 +42,7 @@ ParticleSystem.update = function()
 	print "Time_1: " + (time - self.start) + char(9) + " of " + (1/60) + " Diference: " + ((time - self.start) - (1/60))
 	self.start = time
 	
+	self.duration -= FPSConst
 	if time - self.startParticleSystem > self.duration then return
 	
 	if time - self.lastTimeBtwParticles > self.timeBtwParticles then
@@ -53,8 +54,6 @@ ParticleSystem.update = function()
 	end if
 	
 	print "Time_2: " + (time - self.start) + char(9) + " of " + (1/60) + "Diference: " + ((time - self.start) - (1/60))
-	
-	self.duration -= FPSConst
 end function
 
 ParticleSystem.updateDisplay = function(index) 
@@ -140,13 +139,19 @@ initialParticleSystem = function(position = null, rotation = 0, spread = null, d
 	return CurentParticleSystem
 end function
 
+updateParticleSystem = function(particleSystem)
+	if particleSystem == null then return
+	if particleSystem.duration > 0 or particleSystem.particles != [] then
+		particleSystem.update()
+	end if
+end function
+
 random = function(a,b,t)
 	return round((rnd()*(b-a))+a, t)
 end function
 
 testFunction1 = function
 	clear
-	localDisplay.clear
 	
 	testPS = initialParticleSystem([200,200], -15, [45,45], 5, [5,8], [0.1,0.2], [5,6], [5,6], 0.01, 1/360, null, "#FFFFFFFF")
 	testPS1 = initialParticleSystem([400,200], 15, [45,45], 5, [5,8], [0.1,0.2], [5,6], [5,6], 0.01, 1/360, null, "#FFFFFFFF")
@@ -154,12 +159,8 @@ testFunction1 = function
 	while true
 		display(3).clear
 		
-		if testPS.duration > 0 or testPS.particles != [] then
-			testPS.update()
-		end if
-		if testPS1.duration > 0 or testPS1.particles != [] then
-			testPS1.update()
-		end if
+		updateParticleSystem(testPS)
+		updateParticleSystem(testPS1)
 		
 		yield
 	end while
